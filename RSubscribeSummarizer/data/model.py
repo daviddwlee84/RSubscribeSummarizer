@@ -9,6 +9,9 @@ from time import mktime
 
 
 class RSSHubFeedEntry(SQLModel, table=True):
+    """
+    TODO: whether to parse the link and preserve HTML
+    """
 
     __tablename__: str = "RSSHubFeedEntry"
 
@@ -60,7 +63,8 @@ class RSSHubFeedSource(SQLModel, table=True):
 
     # NOTE: this will be an automatically increase id
     # https://sqlmodel.tiangolo.com/tutorial/automatic-id-none-refresh/
-    url: str = Field(primary_key=True)
+    name: str = Field(primary_key=True)
+    url: str
     title: str
     link: str
     updated_time: datetime
@@ -69,11 +73,13 @@ class RSSHubFeedSource(SQLModel, table=True):
     @classmethod
     def from_feedparser_feed(
         cls,
+        name: str,
         url: str,
         feed: FeedParserDict,
         table_name: Optional[str] = None,
     ) -> Self:
         feed_object = cls(
+            name=name,
             url=url,
             title=feed.title,
             link=feed.link,
@@ -83,7 +89,7 @@ class RSSHubFeedSource(SQLModel, table=True):
         if table_name is not None:
             feed_object.__tablename__ = table_name
         return feed_object
-    
+
     @property
     def key_to_dedup(self) -> str:
-        return 'url'
+        return "url"

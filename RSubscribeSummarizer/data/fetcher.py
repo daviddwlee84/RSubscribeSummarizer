@@ -55,23 +55,23 @@ class RSSFeedFetcher:
             session.add(existing_entry)
             session.commit()
             self._logger.info(
-                f"Updated RSS entry {entry.id} with primary key: {[getattr(entry, key) for key in primary_keys]}"
+                f'Updated RSS entry {entry.__class__.__name__}("{getattr(entry, entry.key_to_dedup)}")'
             )
         else:
             # Add the new entry
             session.add(entry)
             session.commit()
             self._logger.info(
-                f"Added RSS entry {entry.id} with primary key: {[getattr(entry, key) for key in primary_keys]}"
+                f'Added RSS entry {entry.__class__.__name__}("{getattr(entry, entry.key_to_dedup)}")'
             )
         return True
 
-    def fetch(self, url: str) -> None:
+    def fetch(self, name: str, url: str) -> None:
         """
         TODO: return status
         """
         self._logger.info(f"Parsing {url}...")
-        source, entries = self._parser(url)
+        source, entries = self._parser(name, url)
         self._logger.info(f"Fetched {len(entries)} entries from source {source.title}.")
         count = 0
         self._logger.info(f"Updating database {self._engine}...")

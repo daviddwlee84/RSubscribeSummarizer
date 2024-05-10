@@ -26,6 +26,7 @@ fastapi dev ./app.py
   - Elastic Search [elastic/elasticsearch: Free and Open, Distributed, RESTful Search Engine](https://github.com/elastic/elasticsearch)
   - VectorDB
 - [ ] Send feed or summarized feed to downstream subscription (e.g. Discord webhook)
+- [ ] Know how to do the database migration when data model schema change
 
 ## Resources
 

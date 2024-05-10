@@ -19,9 +19,11 @@ class BaseRSSFeedParser:
         """
         raise NotImplementedError()
 
-    def __call__(self, url: str) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
+    def __call__(
+        self, source_name: str, url: str
+    ) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
         feed = self.fetch(url)
-        source, entries = self.parse(feed, url)
+        source, entries = self.parse(feed, source_name, url)
         return source, entries
 
 
@@ -40,10 +42,12 @@ class RSSHubFeedParser(BaseRSSFeedParser):
         return feedparser.parse(response.content.decode("utf-8"))
 
     @staticmethod
-    def parse(feed: FeedParserDict, url: str) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
-        feed_source = RSSHubFeedSource.from_feedparser_feed(url, feed.feed)
+    def parse(
+        feed: FeedParserDict, source_name: str, url: str
+    ) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
+        feed_source = RSSHubFeedSource.from_feedparser_feed(source_name, url, feed.feed)
         feed_entries = [
-            RSSHubFeedEntry.from_feedparser_entry(entry, rss_source=feed_source.url)
+            RSSHubFeedEntry.from_feedparser_entry(entry, rss_source=feed_source.name)
             for entry in feed.entries
         ]
         return feed_source, feed_entries

@@ -7,13 +7,14 @@ from RSubscribeSummarizer.utils.logger import get_logger
 
 def _single_fetch_test(engine: Engine):
     fetcher = RSSFeedFetcher(
-        ["https://rsshub.app/wallstreetcn/live/global/2"],
         RSSHubFeedParser(),
         engine,
         override=False,
     )
 
-    fetcher.fetch("https://rsshub.app/wallstreetcn/live/global/2")
+    fetcher.fetch(
+        "wallstreetcn_global", "https://rsshub.app/wallstreetcn/live/global/2"
+    )
 
     from sqlmodel import Session, select
     from RSubscribeSummarizer.data.model import RSSHubFeedEntry, RSSHubFeedSource

@@ -13,7 +13,9 @@ from fastapi.responses import HTMLResponse
 
 logger = get_logger("FastAPI", log_file_path="./log/FastAPI.log")
 
-rss_urls: list[str] = ["https://rsshub.app/wallstreetcn/live/global/2"]
+rss_urls: dict[str, str] = {
+    "wallstreetcn_global": "https://rsshub.app/wallstreetcn/live/global/2"
+}
 
 # Create the database engine
 # TODO: Make this option
@@ -102,6 +104,16 @@ def get_feed_sources() -> list[RSSHubFeedSource]:
     with Session(engine) as session:
         sources = session.exec(select(RSSHubFeedSource)).all()
     return sources
+
+
+@app.get("/feed_entries/{rss_source_name}")
+def get_latest_entries(rss_source_name: str) -> list[RSSHubFeedEntry]:
+    logger.info(f"Get feed entries by feed source {rss_source_name}")
+    with Session(engine) as session:
+        entries = session.exec(
+            select(RSSHubFeedEntry).where(RSSHubFeedEntry.rss_source == rss_source_name)
+        ).all()
+    return entries
 
 
 if __name__ == "__main__":
