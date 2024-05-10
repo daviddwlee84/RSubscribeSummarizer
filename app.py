@@ -9,12 +9,14 @@ from RSubscribeSummarizer.data.model import RSSHubFeedEntry, RSSHubFeedSource
 from RSubscribeSummarizer.utils.logger import get_logger
 from sqlmodel import create_engine, SQLModel, Session, select, desc, asc
 from fastapi.responses import HTMLResponse
+import yaml
 
+CONFIG_FILE = "config.yaml"
 
 logger = get_logger("FastAPI", log_file_path="./log/FastAPI.log")
 
 rss_urls: dict[str, str] = {
-    "wallstreetcn_global": "https://rsshub.app/wallstreetcn/live/global/2"
+    "wallstreetcn_live_global_important": "https://rsshub.app/wallstreetcn/live/global/2"
 }
 
 # Create the database engine
@@ -23,17 +25,18 @@ sqlite_file_name = "database.db"
 # TODO: Able to use other database
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 engine = create_engine(sqlite_url, echo=False)
+# Create the database table
+SQLModel.metadata.create_all(engine) # , tables=[RSSHubFeedEntry, RSSHubFeedSource])
 parser = RSSHubFeedParser()
 fetcher = RSSFeedFetcher(
     parser, engine, override=False, log_file_path="./log/RSSFeedFetcher.log"
 )
 
-# Create the database table
-SQLModel.metadata.create_all(engine)
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Configure rss_urls
+    configure()
     yield
     # TODO: scheduler.shutdown()
 
@@ -65,6 +68,7 @@ def fetch_all_rss():
     """
     Regular fetch from all given RSS and store into database
     """
+    global rss_urls
     # TODO: make this more elegant
     logger.info("Trigger fetch all")
     # TODO: Make interval a GET argument
@@ -73,6 +77,8 @@ def fetch_all_rss():
 
 # Start the scheduled task scheduler
 scheduler.start()
+
+scheduler.get_jobs()
 
 
 # https://github.com/tiangolo/full-stack-fastapi-couchbase/issues/10
@@ -89,6 +95,33 @@ def home() -> str:
     </ul>
     """
     )
+
+
+@app.get("/configure")
+def configure() -> dict[str, dict[str, str] | None]:
+    """
+    TODO: POST to update config, GET to view config (or render a config UI) => Maybe somehow combine into AdminSite
+    """
+    # Update global config
+    global rss_urls
+
+    logger.info(f'Load config from {CONFIG_FILE} and update rss_urls')
+
+    # Update global config
+    with open(CONFIG_FILE, "r") as fp:
+        config = yaml.safe_load(fp)
+
+    # Update RSS URLs
+    rss_urls = config.get(
+        "rss_sources",
+        {
+            "wallstreetcn_live_global_important": "https://rsshub.app/wallstreetcn/live/global/2"
+        },
+    )
+
+    # TODO: Update scheduler
+
+    return config
 
 
 @app.get("/feed_sources")

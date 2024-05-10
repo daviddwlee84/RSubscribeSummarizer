@@ -1,0 +1,27 @@
+# TODO: config additional process for each source
+rss_sources:
+  # Traditional media
+  reuters_world_china: https://rsshub.app/reuters/world/china
+  reuters_world: https://rsshub.app/reuters/world
+  yicai_dt_article: https://rsshub.app/yicai/dt/article
+  wallstreetcn_live_global: https://rsshub.app/wallstreetcn/live/global
+  wallstreetcn_news_global: https://rsshub.app/wallstreetcn/news/global
+  cctv_news: https://rsshub.app/cctv/news
+  # Finance
+  bloomberg: https://rsshub.app/bloomberg
+  # TODO: https://rsshub.app/eastmoney/search/{keyword}
+  sse_inquire: https://rsshub.app/sse/inquire
+  sse_renewal: https://rsshub.app/sse/renewal
+  sse_conbond: https://rsshub.app/sse/convert
+  sse_disclosure: https://rsshub.app/sse/disclosure
+  szse_projectdynamic: https://rsshub.app/szse/projectdynamic
+  szse_inquire: https://rsshub.app/szse/inquire
+  szse_conbond: https://rsshub.app/szse/notice
+  szse_rule: https://rsshub.app/szse/rule
+  xueqiu_today: https://rsshub.app/xueqiu/today
+  xueqiu_hots: https://rsshub.app/xueqiu/hots
+  chinamoney: https://rsshub.app/chinamoney
+  stcn_important: https://rsshub.app/stcn/yw
+
+# TODO: scheduler setting for interval etc
+fetcher:

@@ -80,12 +80,12 @@ class RSSFeedFetcher:
                 count += self.add_or_update(item, session, self._override)
         self._logger.info(f"{count} entries added or updated.")
 
-    def fetch_all(self, rss_urls: list[str], interval: float = 3) -> None:
+    def fetch_all(self, rss_urls: dict[str, str], interval: float = 3) -> None:
         """
         Maybe do this async..?
 
         TODO: return status
         """
-        for url in tqdm(rss_urls, desc="Fetching RSS"):
-            self.fetch(url)
+        for name, url in tqdm(rss_urls.items(), desc="Fetching RSS URLs"):
+            self.fetch(name, url)
             time.sleep(interval)
