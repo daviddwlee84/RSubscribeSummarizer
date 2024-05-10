@@ -26,7 +26,7 @@ sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 engine = create_engine(sqlite_url, echo=False)
 # Create the database table
-SQLModel.metadata.create_all(engine) # , tables=[RSSHubFeedEntry, RSSHubFeedSource])
+SQLModel.metadata.create_all(engine)  # , tables=[RSSHubFeedEntry, RSSHubFeedSource])
 parser = RSSHubFeedParser()
 fetcher = RSSFeedFetcher(
     parser, engine, override=False, log_file_path="./log/RSSFeedFetcher.log"
@@ -105,7 +105,7 @@ def configure() -> dict[str, dict[str, str] | None]:
     # Update global config
     global rss_urls
 
-    logger.info(f'Load config from {CONFIG_FILE} and update rss_urls')
+    logger.info(f"Load config from {CONFIG_FILE} and update rss_urls")
 
     # Update global config
     with open(CONFIG_FILE, "r") as fp:
@@ -150,10 +150,10 @@ def get_feed_entries(
     expression = select(RSSHubFeedEntry)
     if rss_source_name is not None:
         expression = expression.where(RSSHubFeedEntry.rss_source == rss_source_name)
-    if skip >= 0:
+    if skip > 0:
         # https://stackoverflow.com/questions/13258934/applying-limit-and-offset-to-all-queries-in-sqlalchemy
         expression = expression.offset(skip)
-    if limit >= 0:
+    if limit > 0:
         expression = expression.limit(limit)
     # https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending
     if latest:
