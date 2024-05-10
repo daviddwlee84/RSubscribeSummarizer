@@ -8,6 +8,7 @@ from RSubscribeSummarizer.data.parser import RSSHubFeedParser
 from RSubscribeSummarizer.data.model import RSSHubFeedEntry, RSSHubFeedSource
 from RSubscribeSummarizer.utils.logger import get_logger
 from sqlmodel import create_engine, SQLModel, Session, select
+from fastapi.responses import HTMLResponse
 
 
 logger = get_logger("FastAPI", log_file_path="./log/FastAPI.log")
@@ -79,6 +80,22 @@ def fetch_all_rss():
 scheduler.start()
 
 
+# https://github.com/tiangolo/full-stack-fastapi-couchbase/issues/10
+# https://fastapi.tiangolo.com/advanced/path-operation-advanced-configuration/#exclude-from-openapi
+@app.get("/", include_in_schema=False)
+def home() -> str:
+    return HTMLResponse(
+        """
+    <h1>RSS Subscriber & Summarizer</h1>
+    <ul>
+    <li><a href="/docs">OpenAPI Documents</a></li>
+    <li><a href="/redoc">ReDoc Documents</a></li>
+    <li><a href="/admin">Admin (Scheduler)</a></li>
+    </ul>
+    """
+    )
+
+
 @app.get("/feed_sources")
 def get_feed_sources() -> list[RSSHubFeedSource]:
     logger.info("Get feed sources")
@@ -91,5 +108,4 @@ if __name__ == "__main__":
     import uvicorn
 
     # TypeError: run() got an unexpected keyword argument 'debug'
-    # uvicorn.run(app, debug=True)
-    uvicorn.run(app)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

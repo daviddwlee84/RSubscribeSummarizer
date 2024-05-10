@@ -44,6 +44,8 @@ API
 
 - [FastAPI](https://fastapi.tiangolo.com/)
   - [tiangolo/fastapi: FastAPI framework, high performance, easy to learn, fast to code, ready for production](https://github.com/tiangolo/fastapi)
+  - Web Page
+    - [FastAPI — Render Template & Redirection | by Sarumathy P | featurepreneur | Medium](https://medium.com/featurepreneur/fastapi-render-template-redirection-c98a26ae1e2a)
 - ASPScheduler
   - Wrapper
     - [amisadmin/fastapi-scheduler: FastAPI-Scheduler is a simple scheduled task management FastAPI extension based on APScheduler.](https://github.com/amisadmin/fastapi-scheduler)
