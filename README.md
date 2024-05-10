@@ -6,7 +6,7 @@ An RSS subscriber and information summarizer.
 
 - [ ] Compress output with [zstd](https://github.com/facebook/zstd)
 - [ ] Use database
-  - [ ] SQLite
+  - [X] SQLite
   - [ ] PostgreSQL with docker compose
 - [ ] YAML Configure file to config
   1. source
@@ -29,3 +29,10 @@ Parser
 
 - [kurtmckee/feedparser: Parse feeds in Python](https://github.com/kurtmckee/feedparser)
 - [Reader API](https://jina.ai/reader)
+
+API
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+  - [tiangolo/fastapi: FastAPI framework, high performance, easy to learn, fast to code, ready for production](https://github.com/tiangolo/fastapi)
+- [amisadmin/fastapi-scheduler: FastAPI-Scheduler is a simple scheduled task management FastAPI extension based on APScheduler.](https://github.com/amisadmin/fastapi-scheduler)
+- [amisadmin/fastapi-amis-admin: FastAPI-Amis-Admin is a high-performance, efficient and easily extensible FastAPI admin framework. Inspired by django-admin, and has as many powerful functions as django-admin.](https://github.com/amisadmin/fastapi-amis-admin)
