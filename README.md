@@ -12,6 +12,12 @@ python main.py
 fastapi dev ./app.py
 ```
 
+Using Docker
+
+```bash
+docker compose up --build
+```
+
 ## Todo
 
 - [ ] Compress output with [zstd](https://github.com/facebook/zstd)

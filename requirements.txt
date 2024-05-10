@@ -1,12 +1,15 @@
 feedparser
 requests
+pydantic
+pydantic-settings
 sqlmodel
 markdownify
-sqlite3
 SQLAlchemy
 ipdb
 rich
 fastapi
 uvicorn
 fastapi-scheduler
+aiosqlite
+fastapi_amis_admin[sqlmodel]
 tqdm

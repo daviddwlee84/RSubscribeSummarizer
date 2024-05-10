@@ -50,13 +50,6 @@ site = AdminSite(
     )
 )
 
-# # Custom timed task scheduler
-# from apscheduler.schedulers.asyncio import AsyncIOScheduler
-# from apscheduler.jobstores.redis import RedisJobStore
-# # Use `RedisJobStore` to create a job store
-# scheduler = AsyncIOScheduler(jobstores={'default':RedisJobStore(db=2,host="127.0.0.1",port=6379,password="test")})
-# scheduler = SchedulerAdmin.bind(site, scheduler=scheduler)
-
 # Create an instance of the scheduled task scheduler `SchedulerAdmin`
 scheduler = SchedulerAdmin.bind(site)
 
@@ -109,10 +102,13 @@ def get_feed_sources() -> list[RSSHubFeedSource]:
 # https://fastapi.tiangolo.com/tutorial/path-params/
 # https://fastapi.tiangolo.com/tutorial/query-params/#optional-parameters
 # https://fastapi.tiangolo.com/tutorial/query-params/#query-parameter-type-conversion
-@app.get("/feed_entries")
-@app.get("/feed_entries/{rss_source_name}")
-def get_latest_entries(
-    rss_source_name: str | None = None, skip: int = 0, limit: int = 10, latest: bool = True
+@app.get("/feed_entries", name="Get all entries")
+@app.get("/feed_entries/{rss_source_name}", name="Get entries of a RSS source")
+def get_feed_entries(
+    rss_source_name: str | None = None,
+    skip: int = 0,
+    limit: int = 10,
+    latest: bool = True,
 ) -> list[RSSHubFeedEntry]:
     """
     Retrieve entries
