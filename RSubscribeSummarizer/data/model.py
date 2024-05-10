@@ -46,6 +46,10 @@ class RSSHubFeedEntry(SQLModel, table=True):
             entry_object.__tablename__ = table_name
         return entry_object
 
+    @property
+    def key_to_dedup(self) -> str:
+        return "original_id"
+
 
 class RSSHubFeedSource(SQLModel, table=True):
     """
@@ -79,3 +83,7 @@ class RSSHubFeedSource(SQLModel, table=True):
         if table_name is not None:
             feed_object.__tablename__ = table_name
         return feed_object
+    
+    @property
+    def key_to_dedup(self) -> str:
+        return 'url'

@@ -1,7 +1,7 @@
 from typing import Optional
 import feedparser
 from feedparser.util import FeedParserDict
-from data.model import RSSHubFeedEntry, RSSHubFeedSource
+from .model import RSSHubFeedEntry, RSSHubFeedSource
 import requests
 
 
@@ -11,12 +11,17 @@ class BaseRSSFeedParser:
         raise NotImplementedError()
 
     @staticmethod
-    def parse(feed: FeedParserDict) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
+    def parse(
+        feed: FeedParserDict, url: str
+    ) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
+        """
+        The `url` is treated as a metadata, not involves in the RSS Parse progress
+        """
         raise NotImplementedError()
 
     def __call__(self, url: str) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
         feed = self.fetch(url)
-        source, entries = self.parse(feed)
+        source, entries = self.parse(feed, url)
         return source, entries
 
 
@@ -35,8 +40,8 @@ class RSSHubFeedParser(BaseRSSFeedParser):
         return feedparser.parse(response.content.decode("utf-8"))
 
     @staticmethod
-    def parse(feed: FeedParserDict) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
-        feed_source = RSSHubFeedSource.from_feedparser_feed(feed.feed)
+    def parse(feed: FeedParserDict, url: str) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
+        feed_source = RSSHubFeedSource.from_feedparser_feed(url, feed.feed)
         feed_entries = [
             RSSHubFeedEntry.from_feedparser_entry(entry, rss_source=feed_source.url)
             for entry in feed.entries

@@ -2,3 +2,7 @@ feedparser
 requests
 sqlmodel
 markdownify
+sqlite3
+SQLAlchemy
+ipdb
+rich
