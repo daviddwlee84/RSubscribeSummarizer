@@ -7,7 +7,7 @@ from RSubscribeSummarizer.data.fetcher import RSSFeedFetcher
 from RSubscribeSummarizer.data.parser import RSSHubFeedParser
 from RSubscribeSummarizer.data.model import RSSHubFeedEntry, RSSHubFeedSource
 from RSubscribeSummarizer.utils.logger import get_logger
-from sqlmodel import create_engine, SQLModel, Session, select
+from sqlmodel import create_engine, SQLModel, Session, select, desc, asc
 from fastapi.responses import HTMLResponse
 
 
@@ -106,13 +106,34 @@ def get_feed_sources() -> list[RSSHubFeedSource]:
     return sources
 
 
+# https://fastapi.tiangolo.com/tutorial/path-params/
+# https://fastapi.tiangolo.com/tutorial/query-params/#optional-parameters
+# https://fastapi.tiangolo.com/tutorial/query-params/#query-parameter-type-conversion
+@app.get("/feed_entries")
 @app.get("/feed_entries/{rss_source_name}")
-def get_latest_entries(rss_source_name: str) -> list[RSSHubFeedEntry]:
+def get_latest_entries(
+    rss_source_name: str | None = None, skip: int = 0, limit: int = 10, latest: bool = True
+) -> list[RSSHubFeedEntry]:
+    """
+    Retrieve entries
+    """
     logger.info(f"Get feed entries by feed source {rss_source_name}")
+    expression = select(RSSHubFeedEntry)
+    if rss_source_name is not None:
+        expression = expression.where(RSSHubFeedEntry.rss_source == rss_source_name)
+    if skip >= 0:
+        # https://stackoverflow.com/questions/13258934/applying-limit-and-offset-to-all-queries-in-sqlalchemy
+        expression = expression.offset(skip)
+    if limit >= 0:
+        expression = expression.limit(limit)
+    # https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending
+    if latest:
+        expression = expression.order_by(desc(RSSHubFeedEntry.time))
+    else:
+        expression = expression.order_by(asc(RSSHubFeedEntry.time))
+
     with Session(engine) as session:
-        entries = session.exec(
-            select(RSSHubFeedEntry).where(RSSHubFeedEntry.rss_source == rss_source_name)
-        ).all()
+        entries = session.exec(expression).all()
     return entries
 
 
