@@ -2,6 +2,16 @@
 
 An RSS subscriber and information summarizer.
 
+## Getting Started
+
+```bash
+pip install -r requirements.txt
+# Simple Test
+python main.py
+# API Server
+fastapi dev ./app.py
+```
+
 ## Todo
 
 - [ ] Compress output with [zstd](https://github.com/facebook/zstd)
@@ -34,5 +44,9 @@ API
 
 - [FastAPI](https://fastapi.tiangolo.com/)
   - [tiangolo/fastapi: FastAPI framework, high performance, easy to learn, fast to code, ready for production](https://github.com/tiangolo/fastapi)
-- [amisadmin/fastapi-scheduler: FastAPI-Scheduler is a simple scheduled task management FastAPI extension based on APScheduler.](https://github.com/amisadmin/fastapi-scheduler)
-- [amisadmin/fastapi-amis-admin: FastAPI-Amis-Admin is a high-performance, efficient and easily extensible FastAPI admin framework. Inspired by django-admin, and has as many powerful functions as django-admin.](https://github.com/amisadmin/fastapi-amis-admin)
+- ASPScheduler
+  - Wrapper
+    - [amisadmin/fastapi-scheduler: FastAPI-Scheduler is a simple scheduled task management FastAPI extension based on APScheduler.](https://github.com/amisadmin/fastapi-scheduler)
+    - [amisadmin/fastapi-amis-admin: FastAPI-Amis-Admin is a high-performance, efficient and easily extensible FastAPI admin framework. Inspired by django-admin, and has as many powerful functions as django-admin.](https://github.com/amisadmin/fastapi-amis-admin)
+  - Native
+    - [Implementing Background Job Scheduling in FastAPI with APScheduler | by Rajan Sahu | Mar, 2024 | Medium](https://rajansahu713.medium.com/implementing-background-job-scheduling-in-fastapi-with-apscheduler-6f5fdabf3186)

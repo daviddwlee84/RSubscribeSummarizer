@@ -67,6 +67,9 @@ class RSSFeedFetcher:
         return True
 
     def fetch(self, url: str) -> None:
+        """
+        TODO: return status
+        """
         self._logger.info(f"Parsing {url}...")
         source, entries = self._parser(url)
         self._logger.info(f"Fetched {len(entries)} entries from source {source.title}.")
@@ -77,10 +80,12 @@ class RSSFeedFetcher:
                 count += self.add_or_update(item, session, self._override)
         self._logger.info(f"{count} entries added or updated.")
 
-    def fetch_all(self, rss_urls: list[str], interval: float = 3):
+    def fetch_all(self, rss_urls: list[str], interval: float = 3) -> None:
         """
         Maybe do this async..?
+
+        TODO: return status
         """
-        for url in tqdm(rss_urls, "Fetching RSS"):
+        for url in tqdm(rss_urls, desc="Fetching RSS"):
             self.fetch(url)
             time.sleep(interval)

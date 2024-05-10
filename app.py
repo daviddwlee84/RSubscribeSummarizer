@@ -1,14 +1,37 @@
 from fastapi import FastAPI
 from fastapi_amis_admin.admin.settings import Settings
 from fastapi_amis_admin.admin.site import AdminSite
-from datetime import date
 from fastapi_scheduler import SchedulerAdmin
 from contextlib import asynccontextmanager
+from RSubscribeSummarizer.data.fetcher import RSSFeedFetcher
+from RSubscribeSummarizer.data.parser import RSSHubFeedParser
+from RSubscribeSummarizer.utils.logger import get_logger
+from sqlmodel import create_engine, SQLModel
+
+
+logger = get_logger("FastAPI")
+
+rss_urls: list[str] = ["https://rsshub.app/wallstreetcn/live/global/2"]
+
+# Create the database engine
+# TODO: Make this option
+sqlite_file_name = "database.db"
+# TODO: Able to use other database
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+engine = create_engine(sqlite_url, echo=False)
+parser = RSSHubFeedParser()
+fetcher = RSSFeedFetcher(
+    parser, engine, override=False, log_file_path="./log/RSSFeedFetcher.log"
+)
+
+# Create the database table
+SQLModel.metadata.create_all(engine)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
+    # TODO: scheduler.shutdown()
 
 
 # Create `FastAPI` application
@@ -17,7 +40,9 @@ app = FastAPI(lifespan=lifespan)
 # Create `AdminSite` instance
 site = AdminSite(
     settings=Settings(
-        database_url_async="sqlite+aiosqlite:///amisadmin.db", language="en_US"
+        database_url_async="sqlite+aiosqlite:///amisadmin.db",
+        language="en_US",
+        logger=logger,
     )
 )
 
@@ -34,15 +59,20 @@ scheduler = SchedulerAdmin.bind(site)
 # Mount the background management system
 site.mount_app(app)
 
-# Start the scheduled task scheduler
-scheduler.start()
-
 
 # Add scheduled tasks, refer to the official documentation: https://apscheduler.readthedocs.io/en/master/
 # use when you want to run the job at fixed intervals of time
-@scheduler.scheduled_job("interval", seconds=3600)
+@app.get("/fetch_all")
+@scheduler.scheduled_job("interval", name="Fetch All RSS URLs", seconds=3600)
 def fetch_all_rss():
-    pass
+    # TODO: make this more elegant
+    logger.info("Trigger fetch all")
+    # TODO: Make interval a GET argument
+    fetcher.fetch_all(rss_urls, interval=3)
+
+
+# Start the scheduled task scheduler
+scheduler.start()
 
 
 if __name__ == "__main__":

@@ -70,6 +70,19 @@ def get_logger(
             stdout_handler.setFormatter(logging.Formatter("%(name)s - %(message)s"))
             logger.addHandler(stdout_handler)
         else:
+            # TextIO is used instead of more specific types for the standard streams,
+            # since they are often monkeypatched at runtime. At startup, the objects
+            # are initialized to instances of TextIOWrapper.
+            #
+            # To use methods from TextIOWrapper, use an isinstance check to ensure that
+            # the streams have not been overridden:
+            #
+            # if isinstance(sys.stdout, io.TextIOWrapper):
+            #    sys.stdout.reconfigure(...)
+            # BUG: UnicodeEncodeError: 'charmap' codec can't encode characters in position 88-92: character maps to <undefined>
+            # https://github.com/Delgan/loguru/issues/124
+            sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+            # stdout_handler = logging.StreamHandler(sys.stdout.encoding('utf-8'))
             stdout_handler = logging.StreamHandler(sys.stdout)
             stdout_handler.setFormatter(formatter)
             logger.addHandler(stdout_handler)
@@ -79,7 +92,7 @@ def get_logger(
         log_dir = os.path.dirname(log_file_path)
         os.makedirs(log_dir, exist_ok=True)
 
-        file_handler = logging.FileHandler(log_file_path)
+        file_handler = logging.FileHandler(log_file_path, encoding="utf-8")
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
