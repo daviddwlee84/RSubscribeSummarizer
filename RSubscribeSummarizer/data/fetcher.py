@@ -4,15 +4,14 @@ from ..utils.logger import get_logger
 from sqlalchemy import Engine
 from sqlmodel import SQLModel, Session, select
 from sqlalchemy.inspection import inspect
+from tqdm.autonotebook import tqdm
+import time
 
 
 class RSSFeedFetcher:
 
-    _rss_urls: list[str]
-
     def __init__(
         self,
-        rss_urls: list[str],
         parser: BaseRSSFeedParser,
         engine: Engine,
         override: bool = False,
@@ -21,7 +20,6 @@ class RSSFeedFetcher:
         """
         If override then update the existing entries
         """
-        self._rss_urls = rss_urls
         self._parser = parser
         self._engine = engine
         self._logger = get_logger(self.__class__.__name__, log_file_path=log_file_path)
@@ -39,7 +37,9 @@ class RSSFeedFetcher:
         """
         # primary_keys = self.get_primary_key_field(entry)
         primary_keys = [entry.key_to_dedup]
-        filters = [getattr(entry.__class__, key) == getattr(entry, key) for key in primary_keys]
+        filters = [
+            getattr(entry.__class__, key) == getattr(entry, key) for key in primary_keys
+        ]
 
         # NOTE: use "class" so it knows "from" which table
         existing_entry = session.exec(select(entry.__class__).where(*filters)).first()
@@ -77,14 +77,10 @@ class RSSFeedFetcher:
                 count += self.add_or_update(item, session, self._override)
         self._logger.info(f"{count} entries added or updated.")
 
-    def fetch_loop(self, interval: float = 3, sleep: float = 3600):
+    def fetch_all(self, rss_urls: list[str], interval: float = 3):
         """
-        TODO: make this more elegant
+        Maybe do this async..?
         """
-        import time
-
-        while True:
-            for url in self._rss_urls:
-                self.fetch(url)
-                time.sleep(interval)
-            time.sleep(sleep)
+        for url in tqdm(rss_urls, "Fetching RSS"):
+            self.fetch(url)
+            time.sleep(interval)
