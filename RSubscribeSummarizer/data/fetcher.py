@@ -6,6 +6,7 @@ from sqlmodel import SQLModel, Session, select
 from sqlalchemy.inspection import inspect
 from tqdm.autonotebook import tqdm
 import time
+from .model import RSSHubFeedSource
 
 
 class RSSFeedFetcher:
@@ -45,7 +46,8 @@ class RSSFeedFetcher:
         existing_entry = session.exec(select(entry.__class__).where(*filters)).first()
 
         if existing_entry:
-            if not override:
+            # NOTE: will always update the "RSSHubFeedSource" for the "updated_time"
+            if not override and not isinstance(entry, RSSHubFeedSource):
                 # TODO: Maybe separate the "updated" or "added"
                 return False
             # TODO: not sure if this is canonical way to update existing entry

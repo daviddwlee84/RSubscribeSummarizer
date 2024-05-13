@@ -57,6 +57,7 @@ class RSSHubFeedEntry(SQLModel, table=True):
 
     @property
     def key_to_dedup(self) -> str:
+        # NOTE: this is feedparser's id
         return "original_id"
 
 
@@ -98,4 +99,5 @@ class RSSHubFeedSource(SQLModel, table=True):
 
     @property
     def key_to_dedup(self) -> str:
+        # NOTE: this is feedparser's id
         return "url"
