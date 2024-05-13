@@ -13,3 +13,4 @@ fastapi-scheduler
 aiosqlite
 fastapi_amis_admin[sqlmodel]
 tqdm
+alembic
