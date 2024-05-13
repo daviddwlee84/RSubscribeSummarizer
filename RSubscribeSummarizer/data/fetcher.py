@@ -72,11 +72,11 @@ class RSSFeedFetcher:
         """
         TODO: return status
         """
-        self._logger.info(f"Parsing {url}...")
+        self._logger.info(f"Parsing {url} ...")
         source, entries = self._parser(name, url)
         self._logger.info(f"Fetched {len(entries)} entries from source {source.title}.")
         count = 0
-        self._logger.info(f"Updating database {self._engine}...")
+        self._logger.info(f"Updating database {self._engine} ...")
         with Session(self._engine) as session:
             for item in [source] + entries:
                 count += self.add_or_update(item, session, self._override)

@@ -26,6 +26,8 @@ services:
     ports:
       # NOTE: since we override the root path, so it is not possible to call from this port directly now
       - "8000:8000"
+      # For Debug
+      - "7999:7999"
     # https://fastapi.tiangolo.com/advanced/behind-a-proxy/
     # https://stackoverflow.com/questions/64118680/reload-flag-with-uvicorn-can-we-exclude-certain-code
     command: ["fastapi", "dev", "./app.py", "--host", "0.0.0.0", "--port", "8000", "--root-path", "/api"] # , "--reload-exclude", "./Streamlit/*"]

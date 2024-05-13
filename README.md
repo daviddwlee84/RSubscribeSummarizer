@@ -4,6 +4,8 @@ An RSS subscriber and information summarizer.
 
 ## Getting Started
 
+Python 3.10+
+
 ```bash
 pip install -r requirements.txt
 # Simple Test
@@ -16,6 +18,9 @@ Using Docker
 
 ```bash
 docker compose up --build
+
+# Debug (after docker compose up)
+ docker compose exec api fastapi dev ./app.py --host 0.0.0.0 --port 7999
 ```
 
 Migration
@@ -41,6 +46,7 @@ docker-compose exec api alembic revision --autogenerate -m "migration commit"
   - VectorDB
 - [ ] Send feed or summarized feed to downstream subscription (e.g. Discord webhook)
 - [ ] Know how to do the database migration when data model schema change => Alembic
+- [ ] Somehow error will occur for unknown reason `WatchfilesRustInternalError: error in underlying watcher: IO error for operation on /app/database.db-journal: No such file or directory (os error 2) about ["/app/database.db-journal"]`
 
 ## Resources
 

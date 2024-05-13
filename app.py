@@ -70,6 +70,7 @@ site.mount_app(app)
 # Add scheduled tasks, refer to the official documentation: https://apscheduler.readthedocs.io/en/master/
 # use when you want to run the job at fixed intervals of time
 @app.get("/fetch_all")
+# NOTE: too short will cause "skipped: maximum number of running instances reached (1)" in SQLite
 @scheduler.scheduled_job("interval", name="Fetch All RSS URLs", seconds=3600)
 def fetch_all_rss():
     """
