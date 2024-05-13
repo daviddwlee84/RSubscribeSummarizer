@@ -1,11 +1,38 @@
 services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      # Call API http://localhost:18089/api/
+      - "18089:80"
+      # Dashboard http://localhost:18080/dashboard/
+      - "18080:8080" # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - web
+
   api:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ".:/app"
-      # - "./log:/app/log"
-      # - "./database.db:/app/database.db"
     ports:
+      # Call API http://localhost:8000/
       - "8000:8000"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
+      - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.api.middlewares=api-stripprefix"
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
+
+networks:
+  web:
+    driver: bridge
