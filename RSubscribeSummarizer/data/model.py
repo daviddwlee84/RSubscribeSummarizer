@@ -13,6 +13,7 @@ class RSSHubFeedEntry(SQLModel, table=True):
     TODO: whether to parse the link and preserve HTML
     """
 
+    # https://github.com/tiangolo/sqlmodel/issues/159
     __tablename__: str = "RSSHubFeedEntry"
 
     # NOTE: this will be an automatically increase id
@@ -25,7 +26,8 @@ class RSSHubFeedEntry(SQLModel, table=True):
     content: str
     time: datetime
     raw_json: str
-    rss_source: str | None = None
+    # https://sqlmodel.tiangolo.com/tutorial/relationship-attributes/define-relationships-attributes/
+    rss_source: str | None = Field(default=None, foreign_key="RSSHubFeedSource.name")
 
     @classmethod
     def from_feedparser_entry(
