@@ -18,7 +18,12 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+from sqlmodel import SQLModel
+from RSubscribeSummarizer.data.model import RSSHubFeedEntry, RSSHubFeedSource
+
+# https://stackoverflow.com/questions/45919768/how-to-get-alembic-to-recognise-models-from-multiple-model-files-in-flask
+# target_metadata = [RSSHubFeedEntry.metadata, RSSHubFeedSource.metadata]
+target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -44,6 +49,10 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        # For SQLite
+        # NotImplementedError: No support for ALTER of constraints in SQLite dialect. Please refer to the batch mode feature which allows for SQLite migrations using a copy-and-move strategy.
+        # https://stackoverflow.com/questions/30378233/sqlite-lack-of-alter-support-alembic-migration-failing-because-of-this-solutio
+        render_as_batch=True,
     )
 
     with context.begin_transaction():
@@ -64,7 +73,14 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            # For SQLite
+            # NotImplementedError: No support for ALTER of constraints in SQLite dialect. Please refer to the batch mode feature which allows for SQLite migrations using a copy-and-move strategy.
+            # https://stackoverflow.com/questions/30378233/sqlite-lack-of-alter-support-alembic-migration-failing-because-of-this-solutio
+            render_as_batch=True,
+        )
 
         with context.begin_transaction():
             context.run_migrations()

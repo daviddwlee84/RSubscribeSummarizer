@@ -18,12 +18,20 @@ Using Docker
 docker compose up --build
 ```
 
+Migration
+
+```bash
+alembic revision --autogenerate -m "migration commit"
+python3.11 -m alembic revision --autogenerate -m "migration commit"
+docker-compose exec api alembic revision --autogenerate -m "migration commit"
+```
+
 ## Todo
 
 - [ ] Compress output with [zstd](https://github.com/facebook/zstd)
 - [ ] Use database
   - [X] SQLite
-  - [ ] PostgreSQL with docker compose
+  - [ ] PostgreSQL with docker compose [testdrivenio/fastapi-sqlmodel-alembic: Sample FastAPI project that uses async SQLAlchemy, SQLModel, Postgres, Alembic, and Docker.](https://github.com/testdrivenio/fastapi-sqlmodel-alembic/tree/main)
 - [ ] YAML Configure file to config
   1. source
   2. frequency
@@ -32,7 +40,7 @@ docker compose up --build
   - Elastic Search [elastic/elasticsearch: Free and Open, Distributed, RESTful Search Engine](https://github.com/elastic/elasticsearch)
   - VectorDB
 - [ ] Send feed or summarized feed to downstream subscription (e.g. Discord webhook)
-- [ ] Know how to do the database migration when data model schema change
+- [ ] Know how to do the database migration when data model schema change => Alembic
 
 ## Resources
 
