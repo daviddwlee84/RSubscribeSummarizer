@@ -2,3 +2,4 @@ streamlit
 sqlmodel
 feedparser
 markdownify
+pandas
