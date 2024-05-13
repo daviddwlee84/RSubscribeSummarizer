@@ -30,6 +30,14 @@ def get_configure() -> dict[str, dict[str, str] | None]:
     return requests.get(f"{urllib.parse.urljoin(API_REQUEST_ROOT, 'configure')}").json()
 
 
+st.button(
+    "Fetch All",
+    on_click=lambda: requests.get(
+        f"{urllib.parse.urljoin(API_REQUEST_ROOT, 'fetch_all')}"
+    ),
+    help="It takes about 2 minutes. Do not click multiple times at once.",
+)
+
 st.subheader("Configured Server")
 st.json(get_configure())
 
