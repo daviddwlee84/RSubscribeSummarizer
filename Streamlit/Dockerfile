@@ -11,4 +11,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Command to run the FastAPI application
-CMD ["streamlit", "run", "./Overview.py", "--server.address", "0.0.0.0", "--server.port", "8001", "--server.headless", "true"]
+# https://discuss.streamlit.io/t/streamlit-doesnt-reload-site-when-code-in-container-changes/46174
+# set filWatcherType to pool if running Docker on Windows
+CMD ["streamlit", "run", "./Overview.py", "--server.address", "0.0.0.0", "--server.port", "8001", "--server.headless", "true", "--server.fileWatcherType", "poll"]

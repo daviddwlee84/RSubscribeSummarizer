@@ -47,6 +47,7 @@ services:
     volumes:
       - "./Streamlit:/app"
       - "./RSubscribeSummarizer:/RSubscribeSummarizer"
+      - "./database.db:/database.db"
     ports:
       # View Streamlit http://localhost:8001/
       - "8001:8001"

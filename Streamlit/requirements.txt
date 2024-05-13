@@ -3,3 +3,7 @@ sqlmodel
 feedparser
 markdownify
 pandas
+requests
+pydantic
+pydantic-settings
+SQLAlchemy
