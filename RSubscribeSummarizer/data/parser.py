@@ -21,8 +21,10 @@ class BaseRSSFeedParser:
 
     def __call__(
         self, source_name: str, url: str
-    ) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]]:
+    ) -> tuple[RSSHubFeedSource, list[RSSHubFeedEntry]] | None:
         feed = self.fetch(url)
+        if feed is None:
+            return None
         source, entries = self.parse(feed, source_name, url)
         return source, entries
 
@@ -35,7 +37,10 @@ class RSSHubFeedParser(BaseRSSFeedParser):
         https://stackoverflow.com/questions/15431044/can-i-set-max-retries-for-requests-request
         https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#module-urllib3.util.retry
         """
-        response = requests.get(url)
+        try:
+            response = requests.get(url)
+        except:
+            return None
         if response.status_code != 200:
             # TODO: warning, retry, etc.
             return None

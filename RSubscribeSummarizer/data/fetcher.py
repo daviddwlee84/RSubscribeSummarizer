@@ -73,7 +73,11 @@ class RSSFeedFetcher:
         TODO: return status
         """
         self._logger.info(f"Parsing {url} ...")
-        source, entries = self._parser(name, url)
+        parsed_result = self._parser(name, url)
+        if parsed_result is None:
+            self._logger.info(f"Failed to fetched from source {name} ({url}).")
+            return
+        source, entries = parsed_result
         self._logger.info(f"Fetched {len(entries)} entries from source {source.title}.")
         count = 0
         self._logger.info(f"Updating database {self._engine} ...")
