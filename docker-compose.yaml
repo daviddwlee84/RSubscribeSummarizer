@@ -7,13 +7,16 @@ services:
       - "--entrypoints.web.address=:80"
     ports:
       # Call API http://localhost:18089/api/
+      # View Streamlit http://localhost:18089/ui/
       - "18089:80"
       # Dashboard http://localhost:18080/dashboard/
       - "18080:8080" # Dashboard
     volumes:
+      # docker:defaultr reading preface from client //./pipe/docker_engine: file has already been closed
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - web
+
 
   api:
     build:
@@ -32,6 +35,25 @@ services:
       - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.api.middlewares=api-stripprefix"
       - "traefik.http.services.api.loadbalancer.server.port=8000"
+
+  ui:
+    build:
+      context: ./Streamlit
+      dockerfile: Dockerfile
+    volumes:
+      - "./Streamlit:/app"
+      - "./RSubscribeSummarizer:/RSubscribeSummarizer"
+    ports:
+      # View Streamlit http://localhost:8001/
+      - "8001:8001"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ui.rule=PathPrefix(`/ui`)"
+      - "traefik.http.middlewares.ui-stripprefix.stripprefix.prefixes=/ui"
+      - "traefik.http.routers.ui.middlewares=ui-stripprefix"
+      - "traefik.http.services.ui.loadbalancer.server.port=8001"
 
 networks:
   web:
