@@ -10,6 +10,7 @@ from RSubscribeSummarizer.utils.logger import get_logger
 from sqlmodel import create_engine, SQLModel, Session, select, desc, asc
 from fastapi.responses import HTMLResponse
 import yaml
+import urllib.parse
 
 CONFIG_FILE = "config.yaml"
 
@@ -44,11 +45,17 @@ async def lifespan(app: FastAPI):
 # Create `FastAPI` application
 app = FastAPI(lifespan=lifespan)
 
+
 # Create `AdminSite` instance
 site = AdminSite(
     settings=Settings(
         database_url_async="sqlite+aiosqlite:///amisadmin.db",
         language="en_US",
+        # BUG: 404 behind proxy
+        # https://github.com/amisadmin/fastapi-amis-admin/issues/123
+        # https://stackoverflow.com/questions/8223939/how-to-join-absolute-and-relative-urls
+        # site_path=urllib.parse.urljoin("/", app.root_path, "admin"),
+        # site_path="/api/admin",
         logger=logger,
     )
 )
@@ -86,12 +93,12 @@ scheduler.get_jobs()
 @app.get("/", include_in_schema=False)
 def home() -> str:
     return HTMLResponse(
-        """
+        f"""
     <h1>RSS Subscriber & Summarizer</h1>
     <ul>
-    <li><a href="/docs">OpenAPI Documents</a></li>
-    <li><a href="/redoc">ReDoc Documents</a></li>
-    <li><a href="/admin">Admin (Scheduler)</a></li>
+    <li><a href="{urllib.parse.urljoin(app.root_path, 'docs')}">OpenAPI Documents</a></li>
+    <li><a href="{urllib.parse.urljoin(app.root_path, 'redoc')}">ReDoc Documents</a></li>
+    <li><a href="{urllib.parse.urljoin(app.root_path, 'admin')}">Admin (Scheduler)</a></li>
     </ul>
     """
     )
