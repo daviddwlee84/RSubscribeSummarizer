@@ -18,7 +18,7 @@ f"""
 
 - [OpenAPI Documents]({urllib.parse.urljoin(API_ROOT_PATH, 'docs')})
 - [ReDoc Documents]({urllib.parse.urljoin(API_ROOT_PATH, 'redoc')})
-- [Admin (Scheduler)]({urllib.parse.urljoin(API_ROOT_PATH, 'admin')})
+- [Admin (Scheduler)]({urllib.parse.urljoin(API_ROOT_PATH, 'admin')}) (has some routing issue of reverse proxy)
 - [RSSHub Document](https://docs.rsshub.app/guide/)
 """
 
