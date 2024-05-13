@@ -27,14 +27,37 @@ services:
     ports:
       # Call API http://localhost:8000/
       - "8000:8000"
+    # https://fastapi.tiangolo.com/advanced/behind-a-proxy/
+    command: ["fastapi", "dev", "./app.py", "--host", "0.0.0.0", "--port", "8000", "--root-path", "/api"]
     networks:
       - web
     labels:
       - "traefik.enable=true"
+      # - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/api/docs`) || PathPrefix(`/api/redoc`) || PathPrefix(`/api/admin`) || PathPrefix(`/api/openapi.json`)"
       - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
       - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.api.middlewares=api-stripprefix"
       - "traefik.http.services.api.loadbalancer.server.port=8000"
+      # # API
+      # - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
+      # - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+      # - "traefik.http.routers.api.middlewares=api-stripprefix"
+      # - "traefik.http.services.api.loadbalancer.server.port=8000"
+      # # Docs
+      # - "traefik.http.routers.api_docs.rule=PathPrefix(`/api/docs`)"
+      # - "traefik.http.middlewares.docs-stripprefix.stripprefix.prefixes=/api"
+      # - "traefik.http.routers.api_docs.middlewares=docs-stripprefix"
+      # - "traefik.http.services.api_docs.loadbalancer.server.port=8000"
+      # # Redoc
+      # - "traefik.http.routers.api_redoc.rule=PathPrefix(`/api/redoc`)"
+      # - "traefik.http.middlewares.redoc-stripprefix.stripprefix.prefixes=/api"
+      # - "traefik.http.routers.api_redoc.middlewares=redoc-stripprefix"
+      # - "traefik.http.services.api_redoc.loadbalancer.server.port=8000"
+      # # Admin
+      # - "traefik.http.routers.api_admin.rule=PathPrefix(`/api/admin`)"
+      # - "traefik.http.middlewares.admin-stripprefix.stripprefix.prefixes=/api"
+      # - "traefik.http.routers.api_admin.middlewares=admin-stripprefix"
+      # - "traefik.http.services.api_admin.loadbalancer.server.port=8000"
 
   ui:
     build:
