@@ -39,6 +39,8 @@ docker-compose exec api alembic revision --autogenerate -m "migration commit"
 
 ![Database schema](./database_schema.png)
 
+![UML Diagram](./uml_class_diagram.png)
+
 ## Todo
 
 - [ ] Compress output with [zstd](https://github.com/facebook/zstd)
