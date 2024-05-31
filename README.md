@@ -31,6 +31,14 @@ python3.11 -m alembic revision --autogenerate -m "migration commit"
 docker-compose exec api alembic revision --autogenerate -m "migration commit"
 ```
 
+## Database
+
+`view_database.py`
+
+> [SchemaDisplay · sqlalchemy/sqlalchemy Wiki](https://github.com/sqlalchemy/sqlalchemy/wiki/SchemaDisplay)
+
+![Database schema](./database_schema.png)
+
 ## Todo
 
 - [ ] Compress output with [zstd](https://github.com/facebook/zstd)

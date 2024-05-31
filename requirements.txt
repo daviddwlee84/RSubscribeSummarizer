@@ -5,6 +5,7 @@ pydantic-settings
 sqlmodel
 markdownify
 SQLAlchemy
+sqlalchemy-schemadisplay
 ipdb
 rich
 fastapi
